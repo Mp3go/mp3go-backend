@@ -6,7 +6,7 @@ const User = require('./model/user');
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
-
+const port = process.env.PORT || 3000;
 // Middleware for parsing JSON
 app.use(express.json());
 
@@ -54,6 +54,6 @@ app.post('/submit', upload.single('pic'), (req, res) => {
 });
 
 // Start the server
-app.listen(3000, () => {
+app.listen(port, () => {
   console.log('Server started on port 3000');
 });
