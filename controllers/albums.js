@@ -44,9 +44,39 @@ exports.getFilterData = async (req, res, next) => {
 exports.getAlbums = async (req, res, next) => {
   try {
     await Music.find({}).then((data) => {
-      re.status(200).json(data);
+      res.status(200).send(data);
     });
   } catch (error) {
     next(err);
   }
 };
+
+exports.getNewReleases = async(req, res, next) => {
+   try {
+    await Music.find({}).sort({year: -1}).limit(5).then((result) => {
+      res.status(200).send(result)
+    })
+   } catch (error) {
+    next(error);
+   }
+}
+
+exports.getFeaturedAlbums = async(req, res, next) => {
+  try {
+    const count = await Music.countDocuments();
+
+    const randomIndexes = [];
+    while (randomIndexes.length < 5) {
+      const randomIndex = Math.floor(Math.random() * count);
+      if (!randomIndexes.includes(randomIndex)) {
+        randomIndexes.push(randomIndex);
+      }
+    }
+
+    await Music.find({}).skip(randomIndexes[0]).limit(5).then((result) => {
+      res.status(200).send(result);
+    })
+  } catch (error) {
+    next(error);
+  }
+}
