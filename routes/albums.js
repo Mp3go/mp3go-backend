@@ -7,7 +7,7 @@ const router = express.Router();
 
 // router.get("/featured-albums", albumController.getFeaturedAlbums);
 
-// router.get("/all", albumController.getAlbums);
+router.get("/all", albumController.getAlbums);
 
 router.get("/language/:language", albumController.getAlbumsByLanguage);
 

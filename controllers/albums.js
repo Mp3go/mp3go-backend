@@ -36,5 +36,17 @@ exports.getFilterData = async (req, res, next) => {
     await Filter.find({}).then((data) => {
       res.status(200).send(data);
     });
-  } catch (err) {}
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.getAlbums = async (req, res, next) => {
+  try {
+    await Music.find({}).then((data) => {
+      re.status(200).json(data);
+    });
+  } catch (error) {
+    next(err);
+  }
 };
