@@ -1,5 +1,5 @@
 const express = require("express");
-const mongoose = require("mongoose");
+// const mongoose = require("mongoose");
 const multer = require("multer");
 const path = require("path");
 const User = require("./model/user");
