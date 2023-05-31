@@ -9,7 +9,7 @@ const Music = require("./models/music");
 const Filter = require("./models/filter");
 require("dotenv").config();
 const app = express();
-const Port = process.env.port || 3000;
+const Port = process.env.port || 3001;
 app.use("/albums", albumRoutes);
 // app.use(authRoutes);
 // app.use("/user", userRoutes);
