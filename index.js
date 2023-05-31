@@ -6,7 +6,7 @@ const User = require("./model/user");
 
 const app = express();
 const upload = multer({ dest: "uploads/" });
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3200;
 // Middleware for parsing JSON
 app.use(express.json());
 
