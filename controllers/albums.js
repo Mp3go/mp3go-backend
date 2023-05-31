@@ -44,24 +44,27 @@ exports.getFilterData = async (req, res, next) => {
 exports.getAlbums = async (req, res, next) => {
   try {
     await Music.find({}).then((data) => {
-      res.status(200).send(data);
+      res.status(200).json(data);
     });
   } catch (error) {
     next(err);
   }
 };
 
-exports.getNewReleases = async(req, res, next) => {
-   try {
-    await Music.find({}).sort({year: -1}).limit(5).then((result) => {
-      res.status(200).send(result)
-    })
-   } catch (error) {
+exports.getNewReleases = async (req, res, next) => {
+  try {
+    await Music.find({})
+      .sort({ year: -1 })
+      .limit(5)
+      .then((result) => {
+        res.status(200).send(result);
+      });
+  } catch (error) {
     next(error);
-   }
-}
+  }
+};
 
-exports.getFeaturedAlbums = async(req, res, next) => {
+exports.getFeaturedAlbums = async (req, res, next) => {
   try {
     const count = await Music.countDocuments();
 
@@ -73,10 +76,13 @@ exports.getFeaturedAlbums = async(req, res, next) => {
       }
     }
 
-    await Music.find({}).skip(randomIndexes[0]).limit(5).then((result) => {
-      res.status(200).send(result);
-    })
+    await Music.find({})
+      .skip(randomIndexes[0])
+      .limit(5)
+      .then((result) => {
+        res.status(200).send(result);
+      });
   } catch (error) {
     next(error);
   }
-}
+};
