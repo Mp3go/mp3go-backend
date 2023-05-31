@@ -3,9 +3,9 @@ const albumController = require("../controllers/albums");
 
 const router = express.Router();
 
-// router.get("/new-releases", albumController.getNewReleases);
+router.get("/new-releases", albumController.getNewReleases);
 
-// router.get("/featured-albums", albumController.getFeaturedAlbums);
+router.get("/featured-albums", albumController.getFeaturedAlbums);
 
 router.get("/all", albumController.getAlbums);
 
