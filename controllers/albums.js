@@ -44,7 +44,7 @@ exports.getFilterData = async (req, res, next) => {
 exports.getAlbums = async (req, res, next) => {
   try {
     await Music.find({}).then((data) => {
-      re.status(200).json(data);
+      res.status(200).json(data);
     });
   } catch (error) {
     next(err);
