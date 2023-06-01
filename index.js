@@ -30,6 +30,20 @@ app.use('/albums', albumRoutes);
 // app.use(authRoutes);
 // app.use("/user", userRoutes);
 
+// add error middleware
+
+app.use((error, req, res, next) => {
+	console.log(error);
+	const status = error.statusCode || 500;
+	const message = error.message;
+	//data passed in case of validation errors
+	const data = error.data;
+	res.status(status).json({
+		message: message,
+		data: data,
+	});
+});
+
 mongoose
   .connect(
     `mongodb+srv://rachitsharma:${encodeURIComponent(
