@@ -1,19 +1,24 @@
-const express = require('express');
-const userController = require('../controllers/user');
+const express = require("express");
+const userController = require("../controllers/user");
 
 const router = express.Router();
 
-router.get('/cart', userController.getCart);
+// router.get("/verified", (req, res, next) => {
+//   console.log(req.user.id);
+//   res.send("User Verified");
+// });
 
-router.get('/wishlist', userController.getWishlist);
-//send albumId through req body
-router.post('/cart', userController.postCartItem);
+// router.get('/cart', userController.getCart);
 
-router.delete('/cart-delete-item', userController.deleteCartItem);
-// send albumId
-router.post('/wishlist', userController.postWishlistItem);
+// router.get('/wishlist', userController.getWishlist);
+// //send albumId through req body
+// router.post('/cart', userController.postCartItem);
 
-router.delete('/wishlist-delete-item', userController.deleteWishlistItem);
+// router.delete('/cart-delete-item', userController.deleteCartItem);
+// // send albumId
+// router.post('/wishlist', userController.postWishlistItem);
+
+// router.delete('/wishlist-delete-item', userController.deleteWishlistItem);
 
 //modify cart by qty?
 //No wishlist remove option?

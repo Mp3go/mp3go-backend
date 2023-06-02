@@ -1,12 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
 // const path = require("path");
-// const authRoutes = require("./routes/auth");
+const authRoutes = require("./routes/auth");
 const albumRoutes = require("./routes/albums");
-// const userRoutes = require("./routes/user");
+const userRoutes = require("./routes/user");
 const axios = require("axios");
 const Music = require("./models/music");
 const Filter = require("./models/filter");
+const { verifyUser } = require("./middleware/verify");
 
 require("dotenv").config();
 const app = express();
@@ -14,6 +15,7 @@ const Port = process.env.port || 3001;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+mongoose.set("strictQuery", true);
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -27,8 +29,8 @@ app.use((req, res, next) => {
 });
 
 app.use("/albums", albumRoutes);
-// app.use(authRoutes);
-// app.use("/user", userRoutes);
+app.use(authRoutes);
+app.use("/user", verifyUser, userRoutes);
 
 // add error middleware
 
