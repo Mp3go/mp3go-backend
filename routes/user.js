@@ -3,10 +3,10 @@ const userController = require("../controllers/user");
 
 const router = express.Router();
 
-// router.get("/verified", (req, res, next) => {
-//   console.log(req.user.id);
-//   res.send("User Verified");
-// });
+router.get("/verified", (req, res, next) => {
+  console.log(req.user.id);
+  res.send("User Verified");
+});
 
 // router.get('/cart', userController.getCart);
 
