@@ -32,6 +32,7 @@ const musicSchema = new Schema({
   },
   discount: {
     type: Number,
+    default: 0,
   },
   lyric: {
     type: String,

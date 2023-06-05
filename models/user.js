@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
-const music = require("./music");
+const Music = require("./music");
 const Order = require("./order");
 
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      required: true,
+      // required: true,
     },
     email: {
       type: String,
@@ -16,11 +16,12 @@ const userSchema = new mongoose.Schema(
     gender: {
       type: String,
       enum: ["Male", "Female", "Other"],
+      default: "Male",
       required: true,
     },
     phone: {
       type: String,
-      required: true,
+      // required: true,
     },
     password: {
       type: String,
@@ -31,7 +32,7 @@ const userSchema = new mongoose.Schema(
         {
           product: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: music,
+            ref: "Music",
           },
           qty: Number,
         },
@@ -39,6 +40,16 @@ const userSchema = new mongoose.Schema(
       cart_total: { type: Number, default: 0 },
       discount: { type: Number, default: 0 },
       total: { type: Number, default: 0 },
+    },
+    wishlist: {
+      items: [
+        {
+          product: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Music",
+          },
+        },
+      ],
     },
     orders: [
       {

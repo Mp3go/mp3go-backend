@@ -5,9 +5,9 @@ const jwt = require("jsonwebtoken");
 exports.postSignup = async (req, res, next) => {
   try {
     const user = req.body;
-    const ifUserNumbertaken = await User.findOne({ no: user.number });
+    // const ifUserNumbertaken = await User.findOne({ no: user.number });
     const ifUserEmailtaken = await User.findOne({ email: user.email });
-    if (ifUserEmailtaken || ifUserNumbertaken) {
+    if (ifUserEmailtaken) {
       let error = new Error("User Already Available");
       error.statusCode = 409;
       next(error);
