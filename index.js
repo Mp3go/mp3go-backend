@@ -35,11 +35,13 @@ app.use("/user", verifyUser, userRoutes);
 // add error middleware
 
 app.use((error, req, res, next) => {
-  console.log(error);
   const status = error.statusCode || 500;
-  const message = error.message;
-  //data passed in case of validation errors
-  const data = error.data;
+  if (status == 500) {
+    var message = "Server Error";
+  } else {
+    var message = error.message;
+  }
+  const data = error;
   res.status(status).json({
     message: message,
     data: data,
