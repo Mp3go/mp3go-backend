@@ -76,6 +76,11 @@ exports.cartqtyController = async function (req, res, next) {
                 data.cart.cart_total -= ProductData.price;
                 data.cart.discount -= ProductData.discount;
                 data.cart.total -= ProductData.price - ProductData.discount;
+              } else {
+                let error = new Error("Invalid Parameter");
+                error.statusCode = 404;
+                next(error);
+                return;
               }
               await data.save();
               return res.status(200).send("Quantity Changed");
