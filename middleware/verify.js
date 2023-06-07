@@ -5,7 +5,7 @@ exports.verifyUser = async (req, res, next) => {
   if (token) {
     jwt.verify(token, "BoB", (err, decode) => {
       if (err) {
-        return res.status(200).json({
+        return res.status(400).json({
           message: "Failed to Authenticate",
         });
       }
@@ -13,5 +13,5 @@ exports.verifyUser = async (req, res, next) => {
       req.user.id = decode.userid;
       next();
     });
-  }
+  } 
 };

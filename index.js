@@ -23,7 +23,7 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, PATCH, DELETE"
   );
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, x-access-token");
 
   next();
 });
@@ -54,7 +54,7 @@ mongoose
   )
   .then(() => {
     app.listen(Port, () => {
-      console.log("Listening on Port");
+      console.log("Listening on Port", Port);
     });
 
     console.log("Connected to Database");
