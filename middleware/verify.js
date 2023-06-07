@@ -5,13 +5,20 @@ exports.verifyUser = async (req, res, next) => {
   if (token) {
     jwt.verify(token, "BoB", (err, decode) => {
       if (err) {
-        return res.status(401).json({
-          message: "Authentication Error",
-        });
+        console.log("Invalid Token");
+        let error = new Error("Invalid Token");
+        error.statusCode = 401;
+        next(error);
+        return;
       }
       req.user = {};
       req.user.id = decode.userid;
       next();
     });
+  } else {
+    console.log("Invalid Token");
+    let error = new Error("Invalid Token");
+    error.statusCode = 401;
+    next(error);
   }
 };

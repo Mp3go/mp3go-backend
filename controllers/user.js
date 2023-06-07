@@ -4,7 +4,7 @@ const User = require("../models/user");
 
 exports.postCartItem = async function (req, res, next) {
   const userid = req.user.id;
-  const productId = req.body.productId;
+  const productId = req.body.albumId;
   try {
     const ProductData = await Music.findById(productId);
     if (!ProductData) {
@@ -28,12 +28,14 @@ exports.postCartItem = async function (req, res, next) {
             }
           }
         }
-        data.cart.items.unshift({ product: req.body.productId, qty: 1 });
+        data.cart.items.unshift({ product: productId, qty: 1 });
         data.cart.cart_total += ProductData.price;
         data.cart.discount += ProductData.discount;
         data.cart.total += ProductData.price - ProductData.discount;
         await data.save();
-        res.status(200).send("Data Added to the Cart");
+        data = User.findById(userid).populate("cart.items.product").exec();
+        console.log(data.cart);
+        res.status(200).json(data.cart);
       });
     }
   } catch (err) {
@@ -100,12 +102,30 @@ exports.cartqtyController = async function (req, res, next) {
 exports.getCart = async function (req, res, next) {
   const id = req.user.id;
   const data = await User.findById(id).populate("cart.items.product").exec();
+  console.log(data.cart);
   res.status(200).json(data.cart);
+};
+
+exports.getWishlist = async function (req, res, next) {
+  const id = req.user.id;
+  const data = await User.findById(id)
+    .populate("wishlist.items.product")
+    .exec();
+  if (data.wishlist.items.length == 0) {
+    let error = new Error("No Product in the wishlist");
+    error.statusCode = 409;
+    next(error);
+    return;
+  }
+  console.log(data.wishlist.items);
+  res.status(200).json(data.wishlist.items);
 };
 
 exports.deleteCartItem = async function (req, res, next) {
   const userid = req.user.id;
-  const productId = req.body.productId;
+  console.log(req.data.albumId);
+  const productId = req.data.albumId;
+  // console.log(productId );
   try {
     const ProductData = await Music.findById(productId);
     if (!ProductData) {
@@ -148,8 +168,10 @@ exports.deleteCartItem = async function (req, res, next) {
 };
 
 exports.postWishlistItem = async function (req, res, next) {
+  console.log(req.body);
   const userid = req.user.id;
-  const productId = req.body.productId;
+  const productId = req.body.albumId;
+  // console.log(productId);
   try {
     const ProductData = await Music.findById(productId);
     if (!ProductData) {
@@ -173,9 +195,13 @@ exports.postWishlistItem = async function (req, res, next) {
             }
           }
         }
-        data.wishlist.items.unshift({ product: req.body.productId });
+        console.log("Data added to Wishlist");
+        data.wishlist.items.unshift({ product: productId });
         await data.save();
-        res.status(200).send("Data Added to the Wishlist");
+        var data = await User.findById(userid).populate(
+          "wishlist.items.product"
+        );
+        res.status(200).json(data.wishlist.items);
       });
     }
   } catch (err) {
@@ -185,7 +211,7 @@ exports.postWishlistItem = async function (req, res, next) {
 
 exports.deleteWishlistItem = async function (req, res, next) {
   const userid = req.user.id;
-  const productId = req.body.productId;
+  const productId = req.body.albumId;
   try {
     const ProductData = await Music.findById(productId);
     if (!ProductData) {
@@ -205,9 +231,7 @@ exports.deleteWishlistItem = async function (req, res, next) {
               const index = data.wishlist.items.indexOf(i);
               data.wishlist.items.splice(index, 1);
               await data.save();
-              res
-                .status(200)
-                .send("Items Removed From the Wishlist Successfully");
+              res.status(200).json(data.wishlist.items);
               return;
             }
           }

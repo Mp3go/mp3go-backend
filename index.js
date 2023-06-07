@@ -1,21 +1,23 @@
 const express = require("express");
 const mongoose = require("mongoose");
+var morgan = require("morgan");
 // const path = require("path");
 const authRoutes = require("./routes/auth");
 const albumRoutes = require("./routes/albums");
 const userRoutes = require("./routes/user");
 const axios = require("axios");
 const Music = require("./models/music");
+const CORS = require("cors");
 const Filter = require("./models/filter");
 const { verifyUser } = require("./middleware/verify");
-
 require("dotenv").config();
 const app = express();
 const Port = process.env.port || 3001;
-
+app.use(CORS());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 mongoose.set("strictQuery", true);
+app.use(morgan("tiny"));
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -42,6 +44,7 @@ app.use((error, req, res, next) => {
     var message = error.message;
   }
   const data = error;
+  console.log(error);
   res.status(status).json({
     message: message,
     data: data,
