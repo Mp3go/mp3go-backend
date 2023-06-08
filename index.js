@@ -5,6 +5,7 @@ var morgan = require("morgan");
 const authRoutes = require("./routes/auth");
 const albumRoutes = require("./routes/albums");
 const userRoutes = require("./routes/user");
+const paymentRoutes = require("./routes/payment");
 const axios = require("axios");
 const Music = require("./models/music");
 const CORS = require("cors");
@@ -33,6 +34,7 @@ app.use((req, res, next) => {
 app.use("/albums", albumRoutes);
 app.use(authRoutes);
 app.use("/user", verifyUser, userRoutes);
+app.use("/payment", verifyUser, paymentRoutes);
 
 // add error middleware
 

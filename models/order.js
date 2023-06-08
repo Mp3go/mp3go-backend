@@ -11,23 +11,17 @@ var orderSchema = new mongoose.Schema({
     pin: String,
   },
   contactNo: Number,
-  checkoutCart: {
+  checkoutOrder: {
     items: [
       {
         product: {
-          id: String,
-          name: String,
-          image: String,
-          mrp: Number,
-          category: String,
-          price: Number,
-          disc_perc: Number,
-          discount: Number,
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Music",
         },
         qty: Number,
       },
     ],
-    cart_total: Number,
+    order_total: Number,
     discount: Number,
     total: Number,
   },
