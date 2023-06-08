@@ -38,8 +38,6 @@ exports.verifyPayment = async function (req, res, next) {
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
-    console.log(req.body);
-    console.log(razorpay_order_id, razorpay_payment_id, razorpay_signature);
     const sign = razorpay_order_id + "|" + razorpay_payment_id;
     const expectedSign = crypto
       .createHmac("sha256", process.env.KEY_SECRET)
@@ -49,15 +47,14 @@ exports.verifyPayment = async function (req, res, next) {
     if (razorpay_signature === expectedSign) {
       const userData = await User.findById(req.user.id);
       const Order = new order({
-        name: "First Order",
-        contactNo: "999999999",
+        name: userData.name,
+        contactNo: userData.phone,
         checkoutOrder: {
           items: userData.cart.items,
           order_total: userData.cart.cart_total,
           discount: userData.cart.discount,
           total: userData.cart.total,
         },
-
         user: userData._id,
       });
       await Order.save().then(async (data) => {
