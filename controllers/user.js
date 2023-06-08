@@ -15,7 +15,7 @@ exports.postCartItem = async function (req, res, next) {
       await User.findByIdAndUpdate(userid).then(async (data) => {
         if (!data) {
           let error = new Error("No User Founded");
-          error.statusCode = 401;
+          error.statusCode = 409;
           next(error);
           return;
         } else if (data.cart.cart_total > 0) {
@@ -34,7 +34,7 @@ exports.postCartItem = async function (req, res, next) {
         data.cart.total += ProductData.price - ProductData.discount;
         await data.save();
         data = User.findById(userid).populate("cart.items.product").exec();
-        console.log(data.cart);
+        // console.log(data.cart);
         res.status(200).json(data.cart);
       });
     }
@@ -108,10 +108,10 @@ exports.getCart = async function (req, res, next) {
 
 exports.getWishlist = async function (req, res, next) {
   const id = req.user.id;
-  const data = await User.findById(id)
+  const data = await User.findById(id)   //If user is deleted?
     .populate("wishlist.items.product")
     .exec();
-  if (data.wishlist.items.length == 0) {
+  if (data.wishlist.items.length == 0) {  
     let error = new Error("No Product in the wishlist");
     error.statusCode = 409;
     next(error);
@@ -176,7 +176,7 @@ exports.postWishlistItem = async function (req, res, next) {
     const ProductData = await Music.findById(productId);
     if (!ProductData) {
       let error = new Error("No Product Founded");
-      error.statusCode = 409;
+      error.statusCode = 401;
       next(error);
     } else {
       await User.findByIdAndUpdate(userid).then(async (data) => {
@@ -189,7 +189,7 @@ exports.postWishlistItem = async function (req, res, next) {
           for (let i of data.wishlist.items) {
             if (i.product == productId) {
               let error = new Error("Item Already Added to Wishlist");
-              error.statusCode = 401;
+              error.statusCode = 409;
               next(error);
               return;
             }

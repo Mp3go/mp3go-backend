@@ -5,9 +5,9 @@ const jwt = require("jsonwebtoken");
 exports.postSignup = async (req, res, next) => {
   try {
     const user = req.body;
-    // const ifUserNumbertaken = await User.findOne({ no: user.number });
+    const ifUserNumbertaken = await User.findOne({ phone: user.phone });
     const ifUserEmailtaken = await User.findOne({ email: user.email });
-    if (ifUserEmailtaken) {
+    if (ifUserEmailtaken || ifUserNumbertaken) {
       let error = new Error("User Already Available");
       error.statusCode = 409;
       next(error);
@@ -17,6 +17,8 @@ exports.postSignup = async (req, res, next) => {
         username: user.username.toLowerCase(),
         email: user.email.toLowerCase(),
         password: user.password,
+        gender: user.gender,
+        phone: String(user.phone)
       });
       newUser.save();
       res.status(200).json({ message: "Success" });

@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema(
     },
     phone: {
       type: String,
-      // required: true,
+      required: true,
     },
     password: {
       type: String,
@@ -48,7 +48,7 @@ const userSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Music",
           },
-        },
+        },  
       ],
     },
     orders: [
