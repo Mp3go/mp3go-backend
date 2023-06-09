@@ -5,20 +5,24 @@ const jwt = require("jsonwebtoken");
 exports.postSignup = async (req, res, next) => {
   try {
     const user = req.body;
-    // const ifUserNumbertaken = await User.findOne({ no: user.number });
+    console.log(req.body);
+    const ifUserNumbertaken = await User.findOne({ phoneNo: user.phoneNo });
     const ifUserEmailtaken = await User.findOne({ email: user.email });
-    if (ifUserEmailtaken) {
+    if (ifUserEmailtaken || ifUserNumbertaken) {
       let error = new Error("User Already Available");
       error.statusCode = 409;
       next(error);
     } else {
       user.password = await bcrypt.hash(req.body.password, 10);
       const newUser = new User({
-        username: user.username.toLowerCase(),
+        name: user.name,
         email: user.email.toLowerCase(),
         password: user.password,
+        img: user.img,
+        phoneNo: user.phoneNo,
+        gender: user.gender,
       });
-      newUser.save();
+      await newUser.save();
       res.status(200).json({ message: "Success" });
     }
   } catch (err) {
@@ -29,7 +33,7 @@ exports.postSignup = async (req, res, next) => {
 exports.postLogin = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    User.findOne({ email: email }).then((dbUser) => {
+    User.findOne({ email: email.toLowerCase() }).then((dbUser) => {
       if (!dbUser) {
         let error = new Error("No User Founded");
         error.statusCode = 401;
