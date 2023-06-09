@@ -18,8 +18,6 @@ exports.checkout = async function (req, res, next) {
       receipt: crypto.randomBytes(10).toString("hex"),
     };
 
-    console.log(options);
-
     instance.orders.create(options, (error, order) => {
       if (error) {
         const error = new Error("Something Went Wrong");
@@ -45,7 +43,9 @@ exports.verifyPayment = async function (req, res, next) {
       .digest("hex");
 
     if (razorpay_signature === expectedSign) {
-      const userData = await User.findById(req.user.id);
+      const userData = await User.findById(req.user.id).populate(
+        "cart.items.product"
+      );
       const Order = new order({
         name: userData.name,
         contactNo: userData.phone,
@@ -56,9 +56,12 @@ exports.verifyPayment = async function (req, res, next) {
           total: userData.cart.total,
         },
         user: userData._id,
+        paymentId: razorpay_payment_id,
       });
+      console.log(Order);
       await Order.save().then(async (data) => {
         userData.orders.unshift(data._id);
+        userData.cart = {};
         await userData.save();
       });
 

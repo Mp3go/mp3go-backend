@@ -43,6 +43,26 @@ exports.postCartItem = async function (req, res, next) {
   }
 };
 
+exports.getUserData = async function (req, res, next) {
+  const id = req.user.id;
+  try {
+    const userData = await User.findById(id)
+      .populate("orders")
+      .populate("orders.checkoutOrder.items.product")
+      .exec();
+    console.log(userData);
+    if (userData) {
+      res.status(200).json(userData);
+    } else {
+      const error = new Error("No User Present");
+      error.status = 401;
+      next(error);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.cartqtyController = async function (req, res, next) {
   const userid = req.user.id;
   const productId = req.body.productId;

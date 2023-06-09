@@ -7,6 +7,8 @@ router.get("/cart", userController.getCart);
 
 router.get("/wishlist", userController.getWishlist);
 // //send albumId through req body
+router.get("/data", userController.getUserData);
+
 router.post("/cart", userController.postCartItem);
 
 router.post("/cart/qty", userController.cartqtyController);

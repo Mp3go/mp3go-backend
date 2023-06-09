@@ -14,10 +14,7 @@ var orderSchema = new mongoose.Schema({
   checkoutOrder: {
     items: [
       {
-        product: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "Music",
-        },
+        product: {},
         qty: Number,
       },
     ],
@@ -28,6 +25,9 @@ var orderSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+  },
+  paymentId: {
+    type: String,
   },
 });
 

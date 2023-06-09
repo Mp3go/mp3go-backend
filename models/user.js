@@ -8,6 +8,11 @@ const userSchema = new mongoose.Schema(
       type: String,
       // required: true,
     },
+    img: {
+      type: String,
+      default:
+        "https://t4.ftcdn.net/jpg/03/40/12/49/360_F_340124934_bz3pQTLrdFpH92ekknuaTHy8JuXgG7fi.jpg",
+    },
     email: {
       type: String,
       required: true,
