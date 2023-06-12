@@ -22,7 +22,7 @@ exports.postCartItem = async function (req, res, next) {
           for (let i of data.cart.items) {
             if (i.product == productId) {
               let error = new Error("Item Already Added to Cart");
-              error.statusCode = 401;
+              error.statusCode = 404;
               next(error);
               return;
             }
@@ -46,10 +46,7 @@ exports.postCartItem = async function (req, res, next) {
 exports.getUserData = async function (req, res, next) {
   const id = req.user.id;
   try {
-    const userData = await User.findById(id)
-      .populate("orders")
-      .populate("orders.checkoutOrder.items.product")
-      .exec();
+    const userData = await User.findById(id).populate("orders").exec();
     console.log(userData);
     if (userData) {
       res.status(200).json(userData);
@@ -143,8 +140,7 @@ exports.getWishlist = async function (req, res, next) {
 
 exports.deleteCartItem = async function (req, res, next) {
   const userid = req.user.id;
-  console.log(req.data.albumId);
-  const productId = req.data.albumId;
+  const productId = req.body.albumId;
   // console.log(productId );
   try {
     const ProductData = await Music.findById(productId);
@@ -171,7 +167,11 @@ exports.deleteCartItem = async function (req, res, next) {
               data.cart.items.splice(index, 1);
               console.log(data.cart.items);
               await data.save();
-              res.status(200).send("Items Removed From the Cart Successfully");
+              await User.findById(userid)
+                .populate("cart.items.product")
+                .then((data) => {
+                  res.status(200).json(data.cart);
+                });
               return;
             }
           }
@@ -221,6 +221,7 @@ exports.postWishlistItem = async function (req, res, next) {
         var data = await User.findById(userid).populate(
           "wishlist.items.product"
         );
+
         res.status(200).json(data.wishlist.items);
       });
     }
@@ -251,7 +252,11 @@ exports.deleteWishlistItem = async function (req, res, next) {
               const index = data.wishlist.items.indexOf(i);
               data.wishlist.items.splice(index, 1);
               await data.save();
-              res.status(200).json(data.wishlist.items);
+              await User.findById(userid)
+                .populate("wishlist.items.product")
+                .then((data) => {
+                  res.status(200).json(data.wishlist.items);
+                });
               return;
             }
           }
