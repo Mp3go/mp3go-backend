@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 exports.verifyUser = async (req, res, next) => {
   const token = req.headers["x-access-token"];
   if (token) {
-    jwt.verify(token, "BoB", (err, decode) => {
+    jwt.verify(token, process.env.key, (err, decode) => {
       if (err) {
         let error = new Error("Invalid Token");
         error.statusCode = 401;

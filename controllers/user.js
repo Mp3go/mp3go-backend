@@ -62,7 +62,9 @@ exports.getUserData = async function (req, res, next) {
 
 exports.cartqtyController = async function (req, res, next) {
   const userid = req.user.id;
-  const productId = req.body.productId;
+  const productId = req.body.albumId;
+  const method = req.body.method;
+  console.log(method);
   try {
     const ProductData = await Music.findById(productId);
     if (!ProductData) {
@@ -79,12 +81,12 @@ exports.cartqtyController = async function (req, res, next) {
         } else if (data.cart.cart_total > 0) {
           for (let i of data.cart.items) {
             if (i.product == productId) {
-              if (req.body.process == "increment") {
+              if (method == "increment") {
                 i.qty += 1;
                 data.cart.cart_total += ProductData.price;
                 data.cart.discount += ProductData.discount;
                 data.cart.total += ProductData.price - ProductData.discount;
-              } else if (req.body.process == "decrement") {
+              } else if (method == "decrement") {
                 if (i.qty == 1) {
                   let error = new Error("Quantity Can't Be Decreased");
                   error.statusCode = 409;
@@ -102,7 +104,11 @@ exports.cartqtyController = async function (req, res, next) {
                 return;
               }
               await data.save();
-              return res.status(200).send("Quantity Changed");
+              const result = await User.findById(userid)
+                .populate("cart.items.product")
+                .exec();
+              console.log(result.cart);
+              return res.status(200).json(result.cart);
             }
           }
         }

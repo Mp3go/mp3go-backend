@@ -13,7 +13,7 @@ exports.checkout = async function (req, res, next) {
     });
 
     const options = {
-      amount: (UserData.cart.total + 35) * 100,
+      amount: (UserData.cart.total + UserData.cart.total * (5 / 100)) * 100,
       currency: "INR",
       receipt: crypto.randomBytes(10).toString("hex"),
     };

@@ -20,7 +20,6 @@ exports.postSignup = async (req, res, next) => {
         password: user.password,
         img: user.img,
         phoneNo: user.phoneNo,
-        gender: user.gender,
       });
       await newUser.save();
       res.status(200).json({ message: "Success" });
@@ -44,14 +43,20 @@ exports.postLogin = async (req, res, next) => {
             const tokenData = {
               userid: dbUser._id,
             };
-            jwt.sign(tokenData, "BoB", { expiresIn: "1d" }, (err, token) => {
-              if (err) return res.status(400).json({ message: "Server Error" });
-              console.log(token);
-              return res.status(200).json({
-                message: "Success",
-                token: token,
-              });
-            });
+            jwt.sign(
+              tokenData,
+              process.env.key,
+              { expiresIn: "1d" },
+              (err, token) => {
+                if (err)
+                  return res.status(400).json({ message: "Server Error" });
+                return res.status(200).json({
+                  message: "Success",
+                  token: token,
+                  user: dbUser,
+                });
+              }
+            );
           } else {
             let error2 = new Error("Invalid Username or Password");
             error2.statusCode = 401;
