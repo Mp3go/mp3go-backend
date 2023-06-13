@@ -51,7 +51,7 @@ exports.getAlbums = async (req, res, next) => {
       res.status(200).json(data);
     });
   } catch (error) {
-    next(err);
+    next(error);
   }
 };
 
@@ -71,14 +71,6 @@ exports.getNewReleases = async (req, res, next) => {
 exports.getFeaturedAlbums = async (req, res, next) => {
   try {
     const count = await Music.countDocuments();
-    // const randomIndexes = [];
-    // while (randomIndexes.length < 5) {
-    //   const randomIndex = Math.floor(Math.random() * count);
-    //   if (!randomIndexes.includes(randomIndex)) {
-    //     randomIndexes.push(randomIndex);
-    //   }
-    // }
-
     const randomIndex = Math.floor(Math.random() * (count - 5));
     await Music.find({})
       .skip(randomIndex)
