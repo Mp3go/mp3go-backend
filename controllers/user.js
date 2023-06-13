@@ -33,7 +33,9 @@ exports.postCartItem = async function (req, res, next) {
         data.cart.discount += ProductData.discount;
         data.cart.total += ProductData.price - ProductData.discount;
         await data.save();
-        data = User.findById(userid).populate("cart.items.product").exec();
+        data = await User.findById(userid)
+          .populate("cart.items.product")
+          .exec();
         console.log(data.cart);
         res.status(200).json(data.cart);
       });
