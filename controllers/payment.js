@@ -55,7 +55,7 @@ exports.verifyPayment = async function (req, res, next) {
       );
       const Order = new order({
         name: userData.name,
-        contactNo: userData.phone,
+        contactNo: userData.phoneNo,
         checkoutOrder: {
           items: userData.cart.items,
           order_total: userData.cart.cart_total,
@@ -71,10 +71,10 @@ exports.verifyPayment = async function (req, res, next) {
         userData.cart = {};
         await userData.save();
       });
-      const result = await userData
-        .findById(userid)
-        .populate("cart.items.product");
-      return res.status(200).json(result);
+      // const result = await userData
+      //   .findById(userid)
+      //   .populate("cart.items.product");
+      return res.status(200).send("Successfull");
     } else {
       const error = new Error("Invalid signature sent!");
       error.status = 401;
