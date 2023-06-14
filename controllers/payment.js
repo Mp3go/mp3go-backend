@@ -71,10 +71,10 @@ exports.verifyPayment = async function (req, res, next) {
         userData.cart = {};
         await userData.save();
       });
-      // const result = await userData
-      //   .findById(userid)
-      //   .populate("cart.items.product");
-      return res.status(200).send("Successfull");
+      const result = await userData
+        .findById(userid)
+        .populate("cart.items.product");
+      return res.status(200).json(result);
     } else {
       const error = new Error("Invalid signature sent!");
       error.status = 401;
