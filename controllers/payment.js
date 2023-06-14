@@ -5,13 +5,19 @@ const order = require("../models/order");
 
 exports.checkout = async function (req, res, next) {
   const userid = req.user.id;
+  const amount = req.body.amount;
   try {
     const UserData = await User.findById(userid);
     const instance = new Razorpay({
       key_id: process.env.key_id,
       key_secret: process.env.key_secret,
     });
-
+    if (!parseInt(amount) === UserData.cart.cart_total) {
+      var error = new Error("Invalid Payment Details");
+      error.status(409);
+      next(error);
+      return;
+    }
     const options = {
       amount: (UserData.cart.total + UserData.cart.total * (5 / 100)) * 100,
       currency: "INR",
@@ -33,6 +39,7 @@ exports.checkout = async function (req, res, next) {
 };
 
 exports.verifyPayment = async function (req, res, next) {
+  const userid = req.user.id;
   try {
     const { razorpay_order_id, razorpay_payment_id, razorpay_signature } =
       req.body;
@@ -64,8 +71,10 @@ exports.verifyPayment = async function (req, res, next) {
         userData.cart = {};
         await userData.save();
       });
-
-      return res.status(200).json({ message: "Payment verified successfully" });
+      const result = await userData
+        .findById(userid)
+        .populate("cart.items.product");
+      return res.status(200).json(result);
     } else {
       const error = new Error("Invalid signature sent!");
       error.status = 401;
