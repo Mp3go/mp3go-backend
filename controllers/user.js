@@ -217,7 +217,7 @@ exports.postWishlistItem = async function (req, res, next) {
           for (let i of data.wishlist.items) {
             if (i.product == productId) {
               let error = new Error("Item Already Added to Wishlist");
-              error.statusCode = 401;
+              error.statusCode = 402;
               next(error);
               return;
             }
