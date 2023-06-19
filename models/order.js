@@ -11,29 +11,23 @@ var orderSchema = new mongoose.Schema({
     pin: String,
   },
   contactNo: Number,
-  checkoutCart: {
+  checkoutOrder: {
     items: [
       {
-        product: {
-          id: String,
-          name: String,
-          image: String,
-          mrp: Number,
-          category: String,
-          price: Number,
-          disc_perc: Number,
-          discount: Number,
-        },
+        product: {},
         qty: Number,
       },
     ],
-    cart_total: Number,
+    order_total: Number,
     discount: Number,
     total: Number,
   },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+  },
+  paymentId: {
+    type: String,
   },
 });
 

@@ -21,8 +21,13 @@ exports.postCartItem = async function (req, res, next) {
         } else if (data.cart.cart_total > 0) {
           for (let i of data.cart.items) {
             if (i.product == productId) {
+<<<<<<< HEAD
               let error = new Error('Item Already Added to Cart');
               error.statusCode = 401;
+=======
+              let error = new Error("Item Already Added to Cart");
+              error.statusCode = 404;
+>>>>>>> main
               next(error);
               return;
             }
@@ -33,8 +38,15 @@ exports.postCartItem = async function (req, res, next) {
         data.cart.discount += ProductData.discount;
         data.cart.total += ProductData.price - ProductData.discount;
         await data.save();
+<<<<<<< HEAD
         data = User.findById(userid).populate('cart.items.product').exec();
         // console.log(data.cart);
+=======
+        data = await User.findById(userid)
+          .populate("cart.items.product")
+          .exec();
+        console.log(data.cart);
+>>>>>>> main
         res.status(200).json(data.cart);
       });
     }
@@ -43,9 +55,28 @@ exports.postCartItem = async function (req, res, next) {
   }
 };
 
+exports.getUserData = async function (req, res, next) {
+  const id = req.user.id;
+  try {
+    const userData = await User.findById(id).populate("orders").exec();
+    console.log(userData);
+    if (userData) {
+      res.status(200).json(userData);
+    } else {
+      const error = new Error("No User Present");
+      error.status = 401;
+      next(error);
+    }
+  } catch (err) {
+    next(err);
+  }
+};
+
 exports.cartqtyController = async function (req, res, next) {
   const userid = req.user.id;
-  const productId = req.body.productId;
+  const productId = req.body.albumId;
+  const method = req.body.method;
+  console.log(method);
   try {
     const ProductData = await Music.findById(productId);
     if (!ProductData) {
@@ -62,12 +93,12 @@ exports.cartqtyController = async function (req, res, next) {
         } else if (data.cart.cart_total > 0) {
           for (let i of data.cart.items) {
             if (i.product == productId) {
-              if (req.body.process == 'increment') {
+              if (method == "increment") {
                 i.qty += 1;
                 data.cart.cart_total += ProductData.price;
                 data.cart.discount += ProductData.discount;
                 data.cart.total += ProductData.price - ProductData.discount;
-              } else if (req.body.process == 'decrement') {
+              } else if (method == "decrement") {
                 if (i.qty == 1) {
                   let error = new Error("Quantity Can't Be Decreased");
                   error.statusCode = 409;
@@ -85,7 +116,15 @@ exports.cartqtyController = async function (req, res, next) {
                 return;
               }
               await data.save();
+<<<<<<< HEAD
               return res.status(200).send('Quantity Changed');
+=======
+              const result = await User.findById(userid)
+                .populate("cart.items.product")
+                .exec();
+              console.log(result.cart);
+              return res.status(200).json(result.cart);
+>>>>>>> main
             }
           }
         }
@@ -123,7 +162,10 @@ exports.getWishlist = async function (req, res, next) {
 
 exports.deleteCartItem = async function (req, res, next) {
   const userid = req.user.id;
+<<<<<<< HEAD
   console.log(req.body.albumId);
+=======
+>>>>>>> main
   const productId = req.body.albumId;
   // console.log(productId );
   try {
@@ -151,7 +193,15 @@ exports.deleteCartItem = async function (req, res, next) {
               data.cart.items.splice(index, 1);
               console.log(data.cart.items);
               await data.save();
+<<<<<<< HEAD
               res.status(200).json(data.cart.items); //send updated cart to frontend
+=======
+              await User.findById(userid)
+                .populate("cart.items.product")
+                .then((data) => {
+                  res.status(200).json(data.cart);
+                });
+>>>>>>> main
               return;
             }
           }
@@ -188,8 +238,13 @@ exports.postWishlistItem = async function (req, res, next) {
         } else if (data.wishlist.items.length > 0) {
           for (let i of data.wishlist.items) {
             if (i.product == productId) {
+<<<<<<< HEAD
               let error = new Error('Item Already Added to Wishlist');
               error.statusCode = 409;
+=======
+              let error = new Error("Item Already Added to Wishlist");
+              error.statusCode = 402;
+>>>>>>> main
               next(error);
               return;
             }
@@ -201,6 +256,7 @@ exports.postWishlistItem = async function (req, res, next) {
         var data = await User.findById(userid).populate(
           'wishlist.items.product'
         );
+
         res.status(200).json(data.wishlist.items);
       });
     }
@@ -231,7 +287,11 @@ exports.deleteWishlistItem = async function (req, res, next) {
               const index = data.wishlist.items.indexOf(i);
               data.wishlist.items.splice(index, 1);
               await data.save();
-              res.status(200).json(data.wishlist.items);
+              await User.findById(userid)
+                .populate("wishlist.items.product")
+                .then((data) => {
+                  res.status(200).json(data.wishlist.items);
+                });
               return;
             }
           }

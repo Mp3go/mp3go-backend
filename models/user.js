@@ -6,20 +6,20 @@ const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      // required: true,
+      required: true,
+    },
+    img: {
+      type: String,
+      default:
+        "https://t4.ftcdn.net/jpg/03/40/12/49/360_F_340124934_bz3pQTLrdFpH92ekknuaTHy8JuXgG7fi.jpg",
+      required: true,
     },
     email: {
       type: String,
       required: true,
       unique: true,
     },
-    gender: {
-      type: String,
-      enum: ["Male", "Female", "Other"],
-      default: "Male",
-      required: true,
-    },
-    phone: {
+    phoneNo: {
       type: String,
       required: true,
     },

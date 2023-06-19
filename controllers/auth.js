@@ -5,7 +5,12 @@ const jwt = require("jsonwebtoken");
 exports.postSignup = async (req, res, next) => {
   try {
     const user = req.body;
+<<<<<<< HEAD
     const ifUserNumbertaken = await User.findOne({ phone: user.phone });
+=======
+    console.log(req.body);
+    const ifUserNumbertaken = await User.findOne({ phoneNo: user.phoneNo });
+>>>>>>> main
     const ifUserEmailtaken = await User.findOne({ email: user.email });
     if (ifUserEmailtaken || ifUserNumbertaken) {
       let error = new Error("User Already Available");
@@ -14,13 +19,13 @@ exports.postSignup = async (req, res, next) => {
     } else {
       user.password = await bcrypt.hash(req.body.password, 10);
       const newUser = new User({
-        username: user.username.toLowerCase(),
+        name: user.name,
         email: user.email.toLowerCase(),
         password: user.password,
-        gender: user.gender,
-        phone: String(user.phone)
+        img: user.img,
+        phoneNo: user.phoneNo,
       });
-      newUser.save();
+      await newUser.save();
       res.status(200).json({ message: "Success" });
     }
   } catch (err) {
@@ -31,7 +36,7 @@ exports.postSignup = async (req, res, next) => {
 exports.postLogin = async (req, res, next) => {
   const { email, password } = req.body;
   try {
-    User.findOne({ email: email }).then((dbUser) => {
+    User.findOne({ email: email.toLowerCase() }).then((dbUser) => {
       if (!dbUser) {
         let error = new Error("No User Founded");
         error.statusCode = 401;
@@ -42,14 +47,20 @@ exports.postLogin = async (req, res, next) => {
             const tokenData = {
               userid: dbUser._id,
             };
-            jwt.sign(tokenData, "BoB", { expiresIn: "1d" }, (err, token) => {
-              if (err) return res.status(400).json({ message: "Server Error" });
-              console.log(token);
-              return res.status(200).json({
-                message: "Success",
-                token: token,
-              });
-            });
+            jwt.sign(
+              tokenData,
+              process.env.key,
+              { expiresIn: "1d" },
+              (err, token) => {
+                if (err)
+                  return res.status(400).json({ message: "Server Error" });
+                return res.status(200).json({
+                  message: "Success",
+                  token: token,
+                  user: dbUser,
+                });
+              }
+            );
           } else {
             let error2 = new Error("Invalid Username or Password");
             error2.statusCode = 401;
